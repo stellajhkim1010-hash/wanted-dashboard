@@ -5,7 +5,7 @@ import plotly.express as px
 # ---------------------------
 # Page
 # ---------------------------
-st.set_page_config(page_title="채용 난이도 구조 분석", layout="wide")
+st.set_page_config(page_title="IT 직무 채용 난이도 구조 분석", layout="wide")
 
 # ---------------------------
 # Light Branding CSS
@@ -116,9 +116,9 @@ def insight_card(title: str, body: str, foot: str | None = None):
     )
 
 # ---------------------------
-# Header (HR + Data both)
+# Header (Portfolio badge 유지)
 # ---------------------------
-st.markdown("## IT 직무 채용 난이도의 구조적 원인 분석  <span class='badge'>Portfolio</span>", unsafe_allow_html=True)
+st.markdown("## IT 직무 채용 난이도의 구조적 원인 분석  <span class='badge'>Portfolio Case</span>", unsafe_allow_html=True)
 st.markdown(
     "<div class='sub'>원티드 IT 직무 JD(3,299건)를 기반으로, "
     "<b>채용 난이도(수요/관심)</b>와 <b>JD 설계 요소(복지 키워드·제목 구조)</b>가 "
@@ -126,39 +126,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown("<div class='hr'></div>", unsafe_allow_html=True)
-
-# KPI strip
-top_job = df_difficulty.sort_values("난이도지수", ascending=False).iloc[0]
-pm_val = int(df_difficulty.loc[df_difficulty["직무"]=="PM", "난이도지수"].iloc[0])
-qa_val = int(df_difficulty.loc[df_difficulty["직무"]=="QA", "난이도지수"].iloc[0])
-
-c1, c2, c3 = st.columns(3)
-with c1:
-    st.markdown(f"""
-    <div class="kpi">
-      <div class="label">최고 난이도 직무</div>
-      <div class="value">{top_job['직무']}</div>
-      <div class="note">RDI 최댓값 기준</div>
-    </div>
-    """, unsafe_allow_html=True)
-with c2:
-    st.markdown(f"""
-    <div class="kpi">
-      <div class="label">PM 난이도 지수 (RDI)</div>
-      <div class="value">{pm_val:,}</div>
-      <div class="note">수요 대비 관심 낮음</div>
-    </div>
-    """, unsafe_allow_html=True)
-with c3:
-    st.markdown(f"""
-    <div class="kpi">
-      <div class="label">QA 난이도 지수 (RDI)</div>
-      <div class="value">{qa_val:,}</div>
-      <div class="note">구조적 난이도 상위</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
 tabs = st.tabs([
     "① 채용 난이도 지수(RDI)",
@@ -168,9 +135,42 @@ tabs = st.tabs([
 ])
 
 # ---------------------------
-# Tab 1: Difficulty
+# Tab 1: Difficulty (여기에서만 KPI 카드 노출)
 # ---------------------------
 with tabs[0]:
+    # KPI strip (탭 1 전용)
+    top_job = df_difficulty.sort_values("난이도지수", ascending=False).iloc[0]
+    pm_val = int(df_difficulty.loc[df_difficulty["직무"]=="PM", "난이도지수"].iloc[0])
+    qa_val = int(df_difficulty.loc[df_difficulty["직무"]=="QA", "난이도지수"].iloc[0])
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown(f"""
+        <div class="kpi">
+          <div class="label">최고 난이도 직무</div>
+          <div class="value">{top_job['직무']}</div>
+          <div class="note">RDI 최댓값 기준</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with c2:
+        st.markdown(f"""
+        <div class="kpi">
+          <div class="label">PM 난이도 지수 (RDI)</div>
+          <div class="value">{pm_val:,}</div>
+          <div class="note">수요 대비 관심 낮음</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with c3:
+        st.markdown(f"""
+        <div class="kpi">
+          <div class="label">QA 난이도 지수 (RDI)</div>
+          <div class="value">{qa_val:,}</div>
+          <div class="note">구조적 난이도 상위</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
     left, right = st.columns([1.25, 0.75])
 
     with left:
@@ -202,12 +202,12 @@ with tabs[0]:
         st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
         insight_card(
             "실무 적용 포인트",
-            "상위 직무군은 (1) 제목 구조 정비 → (2) 역할/기대성과 명확화 → (3) 보상/근무조건의 정보 구조 개선 순으로 "
+            "상위 직무군은 (1) 제목 구조 정비 → (2) 역할/기대성과 명확화 → (3) 정보 구조 개선(보상·근무조건) 순으로 "
             "전환율을 끌어올리는 것이 효율적입니다."
         )
 
 # ---------------------------
-# Tab 2: Benefits impact
+# Tab 2: Benefits impact (KPI 없음)
 # ---------------------------
 with tabs[1]:
     left, right = st.columns([1.25, 0.75])
@@ -247,9 +247,8 @@ with tabs[1]:
     with right:
         insight_card(
             "핵심 결과",
-            "<b>성과급/인센티브·재택근무·리프레시 휴가</b>는 관심도 상승 폭이 커, "
-            "타 항목 대비 영향이 큰 요소로 확인되었습니다.",
-            "※ ‘영향 제한적/감소’ 항목은 표현 위치(상단/하단) 조정이 적합합니다."
+            "<b>성과급/인센티브·재택근무·리프레시 휴가</b>는 관심도 상승 폭이 커, 타 항목 대비 영향이 큰 요소로 확인되었습니다.",
+            "※ 영향도가 낮거나 감소 효과를 보인 항목은 JD 상단 강조보다는 보조 정보로 배치하는 전략이 적절합니다."
         )
         st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
         insight_card(
@@ -259,7 +258,7 @@ with tabs[1]:
         )
 
 # ---------------------------
-# Tab 3: Title structure
+# Tab 3: Title structure (KPI 없음)
 # ---------------------------
 with tabs[2]:
     left, right = st.columns([1.25, 0.75])
@@ -298,7 +297,7 @@ with tabs[2]:
         )
 
 # ---------------------------
-# Tab 4: Simulation
+# Tab 4: Simulation (KPI 없음)
 # ---------------------------
 with tabs[3]:
     left, right = st.columns([1.25, 0.75])
@@ -334,6 +333,6 @@ with tabs[3]:
             "순으로 설계하는 것이 효율적입니다."
         )
 
-# Footer (optional, subtle)
+# Footer
 st.markdown("<div class='hr'></div>", unsafe_allow_html=True)
 st.markdown("<div class='small'>※ 본 대시보드는 포트폴리오 목적의 요약 시각화이며, 지표 정의/분모 보정 등 전처리 로직은 분석 노트 기준으로 적용했습니다.</div>", unsafe_allow_html=True)
